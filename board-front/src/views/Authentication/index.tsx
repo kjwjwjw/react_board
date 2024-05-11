@@ -1,4 +1,4 @@
-import React, { ChangeEvent, KeyboardEvent, useRef, useState } from 'react'
+import React, { ChangeEvent, KeyboardEvent, useEffect, useRef, useState } from 'react'
 import './style.css';
 import InputBox from 'components/InputBox';
 import { SignInRequestDto, SignUpRequestDto } from 'apis/request/auth';
@@ -329,9 +329,9 @@ export default function Authentication() {
 
       }
     }
-     // event handler : 패스워드 버튼 클릭 이벤트 처리       //
+     // event handler : 패스워드 확인 버튼 클릭 이벤트 처리       //
      const onPasswordCheckButtonClickHandler = () => {
-      if ( passwordButtonIcon === 'eye-light-off-icon') {
+      if ( passwordCheckButtonIcon === 'eye-light-off-icon') {
       setPasswordCheckButtonIcon('eye-light-on-icon');
       setPasswordCheckType('text');
       }
@@ -379,7 +379,7 @@ export default function Authentication() {
         setEmailError(true);
         setEmailErrorMessage('이메일 주소 포맷이 맞지 않습니다.');
       }
-    const isCheckedPassword = password.trim().length > 8
+    const isCheckedPassword = password.trim().length >= 8
       if(!isCheckedPassword) {
         setPasswordError(true);
         setPasswordErrorMessage('비밀번호는 8자 이상 입력해주세요.');
@@ -446,9 +446,8 @@ export default function Authentication() {
     //  event handler : 패스워드 확인 키 다운 이벤트 처리      //
     const onPasswordCheckKeyDownHandler = (event: KeyboardEvent<HTMLInputElement>) => {
       if(event.key !== 'Enter') return;
-      if(!nicknameRef.current) return;
-      onNextButtonClickHandler();
-      nicknameRef.current.focus();
+       onNextButtonClickHandler();
+     
       
     }
     //  event handler : 닉네임 키 다운 이벤트 처리      //
@@ -482,9 +481,18 @@ export default function Authentication() {
     const onComplete = (data: Address) => {
         const { address } = data;
         setAddress(address);
+        setAddressError(false);
+        setAddressErrorMessage('');
         if (!addressDetailRef.current) return;
         addressDetailRef.current.focus();
     }
+
+    useEffect(() => {
+      if ( page == 2) {
+        if(!nicknameRef.current) return;
+        nicknameRef.current.focus();
+      }
+    }, [page])
     
 
     
