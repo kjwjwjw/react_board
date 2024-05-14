@@ -16,6 +16,8 @@ spring:
 jwt:
   secret: S3cr3tK3yS3cr3tK3yS3cr3tK3yS3cr3tK3yS3cr3tK3yS3cr3tK3y
  
-
-
+#file
+file :
+  path : D:/fileUpload/
+  url : http://localhost:4001/file/ 
 
