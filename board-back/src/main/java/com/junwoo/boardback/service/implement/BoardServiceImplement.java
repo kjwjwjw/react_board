@@ -9,12 +9,14 @@ import org.springframework.stereotype.Service;
 
 import com.junwoo.boardback.dto.request.board.PostBoardRequestDto;
 import com.junwoo.boardback.dto.response.ResponseDto;
+import com.junwoo.boardback.dto.response.board.GetBoardResponseDto;
 import com.junwoo.boardback.dto.response.board.PostBoardReponseDto;
 import com.junwoo.boardback.entity.BoardEntity;
 import com.junwoo.boardback.entity.ImageEntity;
 import com.junwoo.boardback.repository.BoardRepository;
 import com.junwoo.boardback.repository.ImageRepository;
 import com.junwoo.boardback.repository.UserRepository;
+import com.junwoo.boardback.repository.resultSet.GetBoardResultSet;
 import com.junwoo.boardback.service.BoardService;
 
 import lombok.RequiredArgsConstructor;
@@ -26,6 +28,31 @@ public class BoardServiceImplement implements BoardService {
     private final UserRepository userRepository;
     private final BoardRepository boardRepository;
     private final ImageRepository imageRepository;
+
+    @Override
+    public ResponseEntity<? super GetBoardResponseDto> getBoard(Integer boardNumber) {
+
+        GetBoardResultSet resultSet = null;
+        List<ImageEntity> imageEntities = new ArrayList<>();
+
+        try {
+
+            resultSet = boardRepository.getBoard(boardNumber);
+            if ( resultSet == null) return GetBoardResponseDto.noExistBoard();
+
+            imageEntities = imageRepository.finByBoardNumber(boardNumber);
+
+            BoardEntity boardEntity = boardRepository.findByBoardNumber(boardNumber);
+            boardEntity.increaseViewCount();
+            boardRepository.save(boardEntity);
+
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            return ResponseDto.databaseError();
+        }
+
+        return GetBoardResponseDto.success(resultSet, imageEntities);
+    }
     
     @Override
     public ResponseEntity<? super PostBoardReponseDto> postBoard(PostBoardRequestDto dto, String email) {
@@ -58,5 +85,7 @@ public class BoardServiceImplement implements BoardService {
         return PostBoardReponseDto.success();
       
     }
+
+  
     
 }
