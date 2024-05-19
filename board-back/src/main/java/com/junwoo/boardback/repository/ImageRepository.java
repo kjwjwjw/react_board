@@ -10,6 +10,6 @@ import com.junwoo.boardback.entity.ImageEntity;
 @Repository
 public interface ImageRepository extends JpaRepository<ImageEntity, Integer> {
 
-    List<ImageEntity> finByBoardNumber(Integer boardNumber);
+    List<ImageEntity> findByBoardNumber(Integer boardNumber);
     
 }

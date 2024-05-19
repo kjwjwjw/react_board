@@ -8,5 +8,7 @@ import com.junwoo.boardback.entity.primaryKey.FavoritePk;
 
 @Repository
 public interface FavoriteRepository extends JpaRepository<FavoriteEntity, FavoritePk>{
+
+    FavoriteEntity findByBoardNumberAndUserEmail(Integer boardNumber, String userEmail);
     
 }

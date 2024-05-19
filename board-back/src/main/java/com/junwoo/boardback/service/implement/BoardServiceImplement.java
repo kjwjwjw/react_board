@@ -11,9 +11,12 @@ import com.junwoo.boardback.dto.request.board.PostBoardRequestDto;
 import com.junwoo.boardback.dto.response.ResponseDto;
 import com.junwoo.boardback.dto.response.board.GetBoardResponseDto;
 import com.junwoo.boardback.dto.response.board.PostBoardReponseDto;
+import com.junwoo.boardback.dto.response.board.PutFavoriteResponseDto;
 import com.junwoo.boardback.entity.BoardEntity;
+import com.junwoo.boardback.entity.FavoriteEntity;
 import com.junwoo.boardback.entity.ImageEntity;
 import com.junwoo.boardback.repository.BoardRepository;
+import com.junwoo.boardback.repository.FavoriteRepository;
 import com.junwoo.boardback.repository.ImageRepository;
 import com.junwoo.boardback.repository.UserRepository;
 import com.junwoo.boardback.repository.resultSet.GetBoardResultSet;
@@ -28,6 +31,7 @@ public class BoardServiceImplement implements BoardService {
     private final UserRepository userRepository;
     private final BoardRepository boardRepository;
     private final ImageRepository imageRepository;
+    private final FavoriteRepository favoriteRepository;
 
     @Override
     public ResponseEntity<? super GetBoardResponseDto> getBoard(Integer boardNumber) {
@@ -40,7 +44,7 @@ public class BoardServiceImplement implements BoardService {
             resultSet = boardRepository.getBoard(boardNumber);
             if ( resultSet == null) return GetBoardResponseDto.noExistBoard();
 
-            imageEntities = imageRepository.finByBoardNumber(boardNumber);
+            imageEntities = imageRepository.findByBoardNumber(boardNumber);
 
             BoardEntity boardEntity = boardRepository.findByBoardNumber(boardNumber);
             boardEntity.increaseViewCount();
@@ -84,6 +88,39 @@ public class BoardServiceImplement implements BoardService {
         }
         return PostBoardReponseDto.success();
       
+    }
+
+    @Override
+    public ResponseEntity<? super PutFavoriteResponseDto> putFavorite(Integer boardNumber, String email) {
+      
+        try {
+
+            boolean existedUser = userRepository.existsByEmail(email);
+            if(!existedUser) return PutFavoriteResponseDto.noExistUser();
+
+            BoardEntity boardEntity = boardRepository.findByBoardNumber(boardNumber);
+            if (boardEntity == null) return PutFavoriteResponseDto.noExistBoard();
+
+            FavoriteEntity favoriteEntity = favoriteRepository.findByBoardNumberAndUserEmail(boardNumber, email);
+            if(favoriteEntity == null) {
+                favoriteEntity = new FavoriteEntity(email, boardNumber);
+                favoriteRepository.save(favoriteEntity);
+                boardEntity.increaseFavoriteCount();
+            } 
+            else {
+                favoriteRepository.delete(favoriteEntity);
+                boardEntity.decreaseFavoriteCount();
+            }
+
+            boardRepository.save(boardEntity);
+            
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            return ResponseDto.databaseError();
+          
+        }
+
+        return PutFavoriteResponseDto.success();
     }
 
   
