@@ -34,10 +34,10 @@ public class BoardController {
 
     @PostMapping("")
     public ResponseEntity<? super PostBoardReponseDto > postBoard(
-        @RequestBody @Valid PostBoardRequestDto RequestBody,
+        @RequestBody @Valid PostBoardRequestDto requestBody,
         @AuthenticationPrincipal String email
     ) {
-        ResponseEntity<? super PostBoardReponseDto> response = boardService.postBoard(RequestBody, email);
+        ResponseEntity<? super PostBoardReponseDto> response = boardService.postBoard(requestBody, email);
         return response;
     }
     

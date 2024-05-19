@@ -13,7 +13,7 @@ public interface BoardRepository extends JpaRepository<BoardEntity, Integer>  {
     BoardEntity findByBoardNumber(Integer boardNumber);
 
     @Query( value = 
-            "SELECT" + 
+            "SELECT " + 
             "B.board_number AS boardNumber, " +
             "B.title AS title, " +
             "B.content AS content, " +
