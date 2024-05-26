@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import com.junwoo.boardback.dto.request.board.PostBoardRequestDto;
 import com.junwoo.boardback.dto.response.ResponseDto;
 import com.junwoo.boardback.dto.response.board.GetBoardResponseDto;
+import com.junwoo.boardback.dto.response.board.GetFavoriteListResponseDto;
 import com.junwoo.boardback.dto.response.board.PostBoardReponseDto;
 import com.junwoo.boardback.dto.response.board.PutFavoriteResponseDto;
 import com.junwoo.boardback.entity.BoardEntity;
@@ -20,6 +21,7 @@ import com.junwoo.boardback.repository.FavoriteRepository;
 import com.junwoo.boardback.repository.ImageRepository;
 import com.junwoo.boardback.repository.UserRepository;
 import com.junwoo.boardback.repository.resultSet.GetBoardResultSet;
+import com.junwoo.boardback.repository.resultSet.GetFavoriteListResultSet;
 import com.junwoo.boardback.service.BoardService;
 
 import lombok.RequiredArgsConstructor;
@@ -57,6 +59,28 @@ public class BoardServiceImplement implements BoardService {
 
         return GetBoardResponseDto.success(resultSet, imageEntities);
     }
+
+    @Override
+    public ResponseEntity<? super GetFavoriteListResponseDto> getFavoriteList(Integer boardNumber) {
+
+            List<GetFavoriteListResultSet> resultSets = new ArrayList<>();
+        
+            try {
+
+                boolean existedBoard = boardRepository.existsByBoardNumber(boardNumber);
+                if(!existedBoard) return GetFavoriteListResponseDto.noExistBoard();
+
+                resultSets = favoriteRepository.getFavoriteList(boardNumber);
+
+            } catch (Exception exception) {
+                exception.printStackTrace();
+                return ResponseDto.databaseError();
+            }
+
+        return GetFavoriteListResponseDto.success(resultSets);
+    }
+
+
     
     @Override
     public ResponseEntity<? super PostBoardReponseDto> postBoard(PostBoardRequestDto dto, String email) {
@@ -123,6 +147,7 @@ public class BoardServiceImplement implements BoardService {
         return PutFavoriteResponseDto.success();
     }
 
+  
   
     
 }

@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.junwoo.boardback.dto.request.board.PostBoardRequestDto;
 import com.junwoo.boardback.dto.response.board.GetBoardResponseDto;
+import com.junwoo.boardback.dto.response.board.GetFavoriteListResponseDto;
 import com.junwoo.boardback.dto.response.board.PostBoardReponseDto;
 import com.junwoo.boardback.dto.response.board.PutFavoriteResponseDto;
 import com.junwoo.boardback.service.BoardService;
@@ -34,6 +35,14 @@ public class BoardController {
        return response;
     }
 
+    @GetMapping("/{boardNumber}/favorite-list")
+    public ResponseEntity<? super GetFavoriteListResponseDto> getFavoriteList (
+        @PathVariable("boardNumber") Integer boardNumber
+    ) {
+       ResponseEntity<? super GetFavoriteListResponseDto> response = boardService.getFavoriteList(boardNumber);
+       return response;
+    }
+
     @PostMapping("")
     public ResponseEntity<? super PostBoardReponseDto > postBoard(
         @RequestBody @Valid PostBoardRequestDto requestBody,
@@ -51,5 +60,7 @@ public class BoardController {
         ResponseEntity<? super PutFavoriteResponseDto> response = boardService.putFavorite(boardNumber, email);
         return response;
     }
+
+
     
 }
