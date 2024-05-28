@@ -11,6 +11,7 @@ import com.junwoo.boardback.dto.request.board.PostBoardRequestDto;
 import com.junwoo.boardback.dto.request.board.PostCommentRequestDto;
 import com.junwoo.boardback.dto.response.ResponseDto;
 import com.junwoo.boardback.dto.response.board.GetBoardResponseDto;
+import com.junwoo.boardback.dto.response.board.GetCommentListResponseDto;
 import com.junwoo.boardback.dto.response.board.GetFavoriteListResponseDto;
 import com.junwoo.boardback.dto.response.board.PostBoardReponseDto;
 import com.junwoo.boardback.dto.response.board.PostCommentResponseDto;
@@ -25,6 +26,7 @@ import com.junwoo.boardback.repository.FavoriteRepository;
 import com.junwoo.boardback.repository.ImageRepository;
 import com.junwoo.boardback.repository.UserRepository;
 import com.junwoo.boardback.repository.resultSet.GetBoardResultSet;
+import com.junwoo.boardback.repository.resultSet.GetCommentListResultSet;
 import com.junwoo.boardback.repository.resultSet.GetFavoriteListResultSet;
 import com.junwoo.boardback.service.BoardService;
 
@@ -120,6 +122,28 @@ public class BoardServiceImplement implements BoardService {
     }
 
     @Override
+    public ResponseEntity<? super GetCommentListResponseDto> getCommentList(Integer boardNumber) {
+
+      List<GetCommentListResultSet> resultSets = new ArrayList<>();
+        
+      try {
+
+        boolean existedBoard = boardRepository.existsByBoardNumber(boardNumber);
+        if(!existedBoard) return GetCommentListResponseDto.noExistBoard();
+
+        resultSets = commentRepository.getCommentList(boardNumber);
+
+      } catch (Exception exception) {
+        exception.printStackTrace();
+        return ResponseDto.databaseError();
+      }
+
+      return GetCommentListResponseDto.success(resultSets);
+    }
+
+  
+
+    @Override
     public ResponseEntity<? super PostCommentResponseDto> postComment(PostCommentRequestDto dto, Integer boardNumber  ,String email) {
         
        
@@ -181,7 +205,7 @@ public class BoardServiceImplement implements BoardService {
         return PutFavoriteResponseDto.success();
     }
 
-  
+   
   
     
 }

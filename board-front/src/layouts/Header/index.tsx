@@ -241,7 +241,7 @@ export default function Header() {
                 <div className='icon-box'>
                     <div className='icon logo-dark-icon'></div>
                 </div>
-                <div className='header-logo'>{'Hoons Board'}</div>
+                <div className='header-logo'>{'JW Board'}</div>
             </div>
             <div className='header-right-box'>
                 {(isAuthPage || isMainPage || isSearchPage || isBoardDetailPage) && <SearchButton /> }
